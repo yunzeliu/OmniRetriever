@@ -1,0 +1,405 @@
+/* ============================================================
+   OmniRetriever project page — custom styles on top of Bulma
+   ============================================================ */
+
+:root {
+  --ink:        #2a2440;
+  --ink-soft:   #3f3760;
+  --muted:      #6b6285;
+  --line:       #ece8f4;
+  --bg:         #ffffff;
+  --bg-soft:    #faf8fe;
+  --bg-tint:    #f1ebfb;
+  --accent:     #8b5cf6;
+  --accent-2:   #a78bfa;
+  --accent-soft:#f5f3ff;
+  --accent-tint:#ede9fe;
+  --shadow:     0 4px 20px rgba(124, 92, 246, 0.07);
+  --shadow-lg:  0 10px 30px rgba(124, 92, 246, 0.12);
+  --radius:     12px;
+}
+
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: 'Inter', 'Noto Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.65;
+}
+
+/* ----- HERO ---------------------------------------------------- */
+
+.hero {
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 0%,
+      rgba(167, 139, 250, 0.22),
+      rgba(196, 181, 253, 0.10) 45%,
+      transparent 80%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+  padding-top: 4rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.publication-name {
+  font-family: 'Inter', 'Google Sans', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--ink) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.6rem;
+}
+
+.publication-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.05rem, 1.7vw, 1.4rem);
+  line-height: 1.35;
+  color: var(--ink-soft);
+  margin-bottom: 1.8rem;
+  letter-spacing: -0.005em;
+}
+
+.publication-authors {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+.publication-authors .author-block {
+  display: inline-block;
+}
+
+.publication-authors .author-sep {
+  display: inline-block;
+  color: var(--muted);
+  margin: 0 0.4rem;
+}
+
+.publication-affiliation {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 1.8rem;
+}
+
+.footer-contact {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.6rem !important;
+}
+
+.footer-contact i {
+  margin-right: 0.4rem;
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+/* ----- LINK BUTTONS ------------------------------------------- */
+
+.publication-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.publication-links .link-block {
+  margin: 0;
+}
+
+.publication-links .button.is-dark {
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.15rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(20, 25, 50, 0.12);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.publication-links .button.is-dark:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.32);
+}
+
+.publication-links .button .icon {
+  margin-right: 0.4em;
+}
+
+/* ----- TEASER ------------------------------------------------- */
+
+.hero.teaser {
+  background: none;
+  border: none;
+  padding-top: 1.5rem;
+  padding-bottom: 0;
+}
+
+.hero.teaser img {
+  max-width: 100%;
+  margin: 0 auto;
+  display: block;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+}
+
+.hero.teaser .subtitle {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 820px;
+  margin: 1.25rem auto 0;
+}
+
+/* ----- SECTIONS ----------------------------------------------- */
+
+.section {
+  padding: 3rem 1.5rem;
+}
+
+.title.is-3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.title.is-3.has-text-centered::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  margin: 0.6rem auto 0;
+  border-radius: 2px;
+}
+
+.content {
+  font-size: 1.02rem;
+  color: var(--ink-soft);
+}
+
+.content p, .content li { line-height: 1.75; }
+
+.content ul {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.content ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.7rem;
+}
+
+.content ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0.1rem;
+  top: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ----- TL;DR NOTIFICATION ------------------------------------- */
+
+.notification.is-light {
+  background: linear-gradient(135deg, var(--accent-tint) 0%, var(--accent-soft) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.18);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  color: var(--ink);
+  font-size: 1.02rem;
+  box-shadow: var(--shadow);
+}
+
+.notification.is-light strong {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ----- RESULT BOXES ------------------------------------------- */
+
+.box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2.4rem 1.6rem 2.1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.box:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(139, 92, 246, 0.35);
+  border-top-color: var(--accent);
+}
+
+.box .heading {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.4rem;
+  line-height: 1.3;
+}
+
+.box .title.is-4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.55rem;
+  line-height: 1.35;
+  color: var(--accent);
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.01em;
+  padding: 0.15em 0;
+}
+
+.box .subtitle.is-6 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 0;
+}
+
+/* horizontal gap between result cards */
+.result-cards {
+  margin-top: 2.25rem;
+  --columnGap: 1.5rem;
+}
+
+.result-cards.columns:not(.is-variable) > .column {
+  padding-left: 0.85rem;
+  padding-right: 0.85rem;
+}
+
+/* ----- METHOD / BENCH (alt background) ------------------------ */
+
+.section-alt {
+  background: var(--bg-soft);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.section img {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  max-width: 100%;
+}
+
+.method-figure { margin: 1.75rem 0 1.25rem; }
+
+.bench-figure { margin-top: 1.25rem; }
+
+.bench-figure img { max-width: 100%; }
+
+.figure-caption {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+.section-tldr {
+  padding-top: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.result-detail { margin-top: 2rem; }
+
+.teaser-caption {
+  font-size: 0.95rem !important;
+  color: var(--muted) !important;
+  line-height: 1.55;
+  max-width: 820px;
+  margin: 1.25rem auto 0 !important;
+}
+
+/* ----- BIBTEX ------------------------------------------------- */
+
+pre {
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #2a2440 0%, #3d2f5e 100%);
+  color: #ece8f4;
+  font-family: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  box-shadow: var(--shadow);
+}
+
+pre code { background: none; color: inherit; padding: 0; }
+
+/* ----- ABSTRACT ----------------------------------------------- */
+
+.content.has-text-justified {
+  text-align: left;
+}
+
+.section .content p {
+  font-size: 1.02rem;
+  color: var(--ink-soft);
+}
+
+/* ----- FOOTER ------------------------------------------------- */
+
+.footer {
+  background: var(--bg-soft);
+  border-top: 1px solid var(--line);
+  padding: 2rem 1.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.footer a { color: var(--accent); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+/* ----- MATH (inline) ----------------------------------------- */
+
+.math {
+  font-family: 'STIX Two Math', 'Latin Modern Math', serif;
+}
+
+/* ----- RESPONSIVE -------------------------------------------- */
+
+@media (max-width: 768px) {
+  .hero { padding-top: 2.5rem; }
+  .publication-name { font-size: 2.2rem; }
+  .publication-subtitle { font-size: 1.05rem; }
+  .section { padding: 2rem 1rem; }
+  .title.is-3 { font-size: 1.6rem; }
+  .box .title.is-4 { font-size: 1.45rem; }
+  pre { font-size: 0.78rem; padding: 1rem; }
+}

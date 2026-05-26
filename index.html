@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmniRetriever: Any-to-Any Audio-Video-Text Retrieval via Fusion-as-Teacher Distillation</title>
+<meta name="description" content="OmniRetriever: an open audio-video-text retriever that supervises the joint multimodal embedding via fusion-as-teacher distillation and Tuple-InfoNCE.">
+<meta name="keywords" content="cross-modal retrieval, audio-video-text embedding, unified multimodal encoder, fusion-as-teacher distillation, Tuple-InfoNCE, multimodal RAG">
+<meta property="og:title" content="OmniRetriever: Any-to-Any Audio-Video-Text Retrieval">
+<meta property="og:description" content="An open AVT retriever that surpasses closed Gemini Embedding 2 on a new 12-direction benchmark.">
+<meta property="og:image" content="teaser.png">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="publication-name">OmniRetriever</h1>
+          <p class="publication-subtitle">
+            Any-to-Any Audio-Video-Text Retrieval<br>
+            via Fusion-as-Teacher Distillation
+          </p>
+
+          <div class="publication-authors">
+            <span class="author-block">Yunze Liu</span>
+            <span class="author-sep">·</span>
+            <span class="author-block">Chi-Hao Wu</span>
+            <span class="author-sep">·</span>
+            <span class="author-block">Enmin Zhou</span>
+            <span class="author-sep">·</span>
+            <span class="author-block">Junxiao Shen</span>
+          </div>
+
+          <div class="publication-affiliation">
+            Memories.ai Research
+          </div>
+
+          <div class="publication-links">
+
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                <span>Paper</span>
+              </a>
+            </span>
+
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-archive"></i></span>
+                <span>arXiv</span>
+              </a>
+            </span>
+
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code</span>
+              </a>
+            </span>
+
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">🤗</span>
+                <span>Model</span>
+              </a>
+            </span>
+
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">🤗</span>
+                <span>OmniRetriever-Bench</span>
+              </a>
+            </span>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEASER FIGURE -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="teaser.png" alt="OmniRetriever teaser">
+      <p class="subtitle has-text-centered teaser-caption">
+        <strong>OmniRetriever</strong> turns the joint
+        <span class="math">\(\mathbf{z}_{TVA}\)</span> embedding,
+        which standard pairwise InfoNCE leaves unused at training time
+        (a), into a supervision target via fusion-as-teacher distillation
+        <span class="math">\(\mathcal{L}_D\)</span> and a
+        Tuple-InfoNCE term <span class="math">\(\mathcal{L}_T\)</span> (b).
+        The resulting model attains a new open result on 12-direction AVT
+        retrieval (c) and 13.3&ndash;18.0 R@1 gains over Gemini Embedding&nbsp;2
+        on external audio&ndash;text benchmarks (d).
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- TL;DR -->
+<section class="section section-tldr">
+  <div class="container is-max-desktop">
+    <div class="notification is-light">
+      <p>
+        <strong>TL;DR.</strong> We train a unified audio-video-text encoder
+        via fusion-as-teacher distillation and Tuple-InfoNCE, surpassing
+        closed Gemini Embedding&nbsp;2 on a new 12-direction AVT retrieval
+        benchmark.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ABSTRACT -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Unified multimodal embedding spaces have become the standard
+            interface for cross-modal retrieval and multimodal RAG, and
+            recent audio-video-text (AVT) encoders extend this setting to
+            three modalities. Such encoders can produce a joint
+            <span class="math">\((T,V,A)\)</span> embedding whenever all
+            three modalities are available, but standard pairwise InfoNCE
+            objectives leave this signal unused during training. We close
+            this gap with <strong>fusion-as-teacher distillation</strong>,
+            which treats a stop-gradient copy of the fused embedding as a
+            teacher signal for the single-modal embeddings, paired with a
+            <strong>Tuple-InfoNCE</strong> term that supervises the fused
+            embedding directly. We instantiate this objective as
+            <strong>OmniRetriever-7B</strong>. Across six zero-shot
+            retrieval benchmarks, OmniRetriever-7B surpasses the
+            closed-source Gemini Embedding&nbsp;2 by 13.3&ndash;18.0 R@1 on
+            Clotho and SoundDescs, and reaches the contemporary zero-shot
+            specialist band of open video&ndash;text encoders on MSR-VTT
+            and MSVD. To stress-test joint representations, we further
+            release <strong>OmniRetriever-Bench</strong>, a 12-direction
+            AVT retrieval benchmark totaling 3,782 triples; on it
+            OmniRetriever-7B attains AVG-all 34.84, improving over Gemini
+            Embedding&nbsp;2 by +1.72 and over the best prior open-source
+            AVT method by +8.03. Model weights, datasets, and code will be
+            released.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHOD -->
+<section class="section section-alt">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full">
+        <h2 class="title is-3 has-text-centered">Method</h2>
+
+        <div class="has-text-centered method-figure">
+          <img src="method.png" alt="OmniRetriever training overview">
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            A unified AVT encoder <span class="math">\(f_\theta\)</span>
+            already computes a joint embedding
+            <span class="math">\(\mathbf{z}_{TVA}\)</span> on every
+            <span class="math">\((T,V,A)\)</span> forward, but pairwise
+            InfoNCE leaves it unsupervised. We turn
+            <span class="math">\(\mathbf{z}_{TVA}\)</span> into a training
+            signal with two complementary losses on top of the standard
+            pairwise alignment <span class="math">\(\mathcal{L}_A\)</span>:
+          </p>
+
+          <ul>
+            <li>
+              <strong>Fusion-as-Teacher Distillation
+              (<span class="math">\(\mathcal{L}_D\)</span>).</strong>
+              Distill a stop-gradient copy of
+              <span class="math">\(\mathbf{z}_{TVA}\)</span> into each
+              single-modal embedding via symmetric InfoNCE, so the
+              <span class="math">\(T\)</span>, <span class="math">\(V\)</span>,
+              and <span class="math">\(A\)</span> streams each see the
+              joint geometry that an
+              <span class="math">\(A{+}T{+}V\)</span> query reaches at
+              inference. No extra parameters; one extra joint forward.
+            </li>
+            <li>
+              <strong>Tuple-InfoNCE
+              (<span class="math">\(\mathcal{L}_T\)</span>).</strong>
+              Supervise <span class="math">\(\mathbf{z}_{TVA}\)</span>
+              directly against the in-batch tuple grid plus a
+              modality-cycled hard negative
+              <span class="math">\(\mathbf{z}_{\tilde{T}\tilde{V}\tilde{A}}\)</span>
+              that perturbs one of <span class="math">\(T,V,A\)</span>
+              on a period-3 schedule.
+            </li>
+          </ul>
+
+          <p>
+            Both losses reuse the same backbone forward and apply to any
+            unified retriever whose forward pass produces a joint
+            multi-stream embedding. A cross-backbone replication on
+            Omni-Embed-Nemotron-3B reproduces the dominant
+            <span class="math">\(\mathcal{L}_D\)</span> contribution.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Results</h2>
+
+    <div class="columns result-cards">
+      <div class="column">
+        <div class="box has-text-centered">
+          <p class="heading">Clotho T&rarr;A</p>
+          <p class="title is-4">+18.0 R@1</p>
+          <p class="subtitle is-6">vs. Gemini Embedding 2</p>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box has-text-centered">
+          <p class="heading">SoundDescs T&rarr;A</p>
+          <p class="title is-4">+13.3 R@1</p>
+          <p class="subtitle is-6">vs. Gemini Embedding 2</p>
+        </div>
+      </div>
+      <div class="column">
+        <div class="box has-text-centered">
+          <p class="heading">OmniRetriever-Bench</p>
+          <p class="title is-4">34.84 AVG-all</p>
+          <p class="subtitle is-6">
+            +1.72 vs. Gemini Embedding 2<br>
+            +8.03 vs. best open AVT
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content has-text-justified result-detail">
+      <p>
+        OmniRetriever-7B reaches the zero-shot audio&ndash;text specialist
+        band on Clotho and reduces the prior open omni-modality gap on
+        <span class="math">\(A\!\to\!T\)</span> directions; gains
+        concentrate on the eight audio-anchored routes of
+        OmniRetriever-Bench (e.g.,
+        <span class="math">\(A\!\to\!T\)</span> 11.92 vs. 1.48,
+        <span class="math">\(V\!\to\!A\)</span> 25.46 vs. 13.80 against
+        Gemini Embedding&nbsp;2). On the four visually-saturated
+        <span class="math">\(T\!\leftrightarrow\!V\)</span> and
+        <span class="math">\(T\!\leftrightarrow\!A{+}V\)</span> routes,
+        Gemini still leads by 6&ndash;10 R@1, consistent with its larger
+        closed video&ndash;text training corpus.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section section-alt">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">OmniRetriever-Bench</h2>
+    <div class="content has-text-justified">
+      <p>
+        Standard audio&ndash;text and video&ndash;text benchmarks evaluate
+        only single-modal directions and never pool both video and audio
+        in the same gallery. <strong>OmniRetriever-Bench</strong> is, to
+        our knowledge, the first benchmark to score retrieval across all
+        12 single- and dual-modal directions
+        (<span class="math">\(T\!\leftrightarrow\!V\)</span>,
+        <span class="math">\(T\!\leftrightarrow\!A\)</span>,
+        <span class="math">\(V\!\leftrightarrow\!A\)</span>,
+        <span class="math">\(T\!\leftrightarrow\!AV\)</span>,
+        <span class="math">\(A\!\leftrightarrow\!TV\)</span>,
+        <span class="math">\(V\!\leftrightarrow\!AT\)</span>)
+        on a shared 3,782-triple held-out gallery. All captions are
+        reviewed and corrected by trained human annotators starting from
+        a Gemini 3.0 Pro draft.
+      </p>
+    </div>
+    <div class="has-text-centered bench-figure">
+      <img src="bench_samples_grid.jpg"
+           alt="OmniRetriever-Bench sample cards">
+      <p class="figure-caption">
+        Six sample cards from OmniRetriever-Bench — everyday user-generated
+        content covering cooking, scenery, pets, narration, ambient music,
+        and casual dialogue.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- BIBTEX -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">BibTeX</h2>
+    <pre><code>@article{liu2026omniretriever,
+  title   = {OmniRetriever: Any-to-Any Audio-Video-Text Retrieval via Fusion-as-Teacher Distillation},
+  author  = {Liu, Yunze and Wu, Chi-Hao and Zhou, Enmin and Shen, Junxiao},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</code></pre>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8 has-text-centered content">
+        <p class="footer-contact">
+          <i class="fas fa-envelope"></i>
+          Contact:
+          <a href="mailto:liuyzchina@gmail.com">liuyzchina@gmail.com</a>
+        </p>
+        <p>
+          Website template adapted from
+          <a href="https://nerfies.github.io">Nerfies</a>.
+          Source code is licensed under the
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+          license.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
